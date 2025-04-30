@@ -24,8 +24,8 @@ const NotFound = () => {
           찾으시는 페이지가 존재하지 않거나 이동되었습니다.
         </p>
         <Button asChild>
-          <Link to={user ? "/dashboard" : "/login"}>
-            {user ? "대시보드로 돌아가기" : "로그인으로 돌아가기"}
+          <Link to="/games">
+            게임 목록으로 돌아가기
           </Link>
         </Button>
       </div>

@@ -1,21 +1,14 @@
 
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/context/auth-context";
 
 const Index: React.FC = () => {
-  const { user, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading) {
-      if (user) {
-        navigate("/dashboard");
-      } else {
-        navigate("/login");
-      }
-    }
-  }, [user, loading, navigate]);
+    // 사용자가 로그인 여부와 상관없이 게임 목록으로 바로 이동
+    navigate("/games");
+  }, [navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center">

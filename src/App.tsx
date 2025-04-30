@@ -43,11 +43,9 @@ const App = () => (
             <Route 
               path="/games" 
               element={
-                <ProtectedRoute>
-                  <Layout>
-                    <GameList />
-                  </Layout>
-                </ProtectedRoute>
+                <Layout>
+                  <GameList />
+                </Layout>
               } 
             />
             

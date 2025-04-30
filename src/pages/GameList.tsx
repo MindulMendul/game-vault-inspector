@@ -10,11 +10,13 @@ import { Game } from '@/types/game';
 import StatusBadge from '@/components/status-badge';
 import { Plus, Search } from 'lucide-react';
 import { format } from 'date-fns';
+import { useAuth } from '@/context/auth-context';
 
 const GameList: React.FC = () => {
   const [games, setGames] = useState<Game[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchGames = async () => {
@@ -40,7 +42,7 @@ const GameList: React.FC = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
           <h1 className="text-2xl font-bold">보드 게임 컬렉션</h1>
-          <p className="text-muted-foreground">보드 게임을 관리하고 검사하세요</p>
+          <p className="text-muted-foreground">모든 보드 게임 목록을 확인하세요</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
           <div className="relative w-full sm:w-64">
@@ -53,11 +55,13 @@ const GameList: React.FC = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <Button asChild>
-            <Link to="/games/new">
-              <Plus className="mr-1 h-4 w-4" /> 게임 추가
-            </Link>
-          </Button>
+          {user && (
+            <Button asChild>
+              <Link to="/games/new">
+                <Plus className="mr-1 h-4 w-4" /> 게임 추가
+              </Link>
+            </Button>
+          )}
         </div>
       </div>
 
@@ -73,9 +77,11 @@ const GameList: React.FC = () => {
           ) : filteredGames.length === 0 ? (
             <div className="text-center py-10">
               <p className="text-muted-foreground mb-4">게임을 찾을 수 없습니다</p>
-              <Button asChild variant="outline">
-                <Link to="/games/new">첫 번째 게임 추가하기</Link>
-              </Button>
+              {user && (
+                <Button asChild variant="outline">
+                  <Link to="/games/new">첫 번째 게임 추가하기</Link>
+                </Button>
+              )}
             </div>
           ) : (
             <div className="rounded-md border">
@@ -123,15 +129,19 @@ const GameList: React.FC = () => {
                         )}
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          asChild
-                        >
-                          <Link to={`/games/${game.id}`}>
-                            상세 보기
-                          </Link>
-                        </Button>
+                        {user ? (
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            asChild
+                          >
+                            <Link to={`/games/${game.id}`}>
+                              상세 보기
+                            </Link>
+                          </Button>
+                        ) : (
+                          <span className="text-sm text-muted-foreground">로그인 필요</span>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
