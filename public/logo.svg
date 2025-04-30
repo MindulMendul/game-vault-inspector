@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="50" viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
+  <path d="M20 10 h160" stroke="#FF0000" stroke-width="4"/>
+  <text x="20" y="35" font-family="Arial Black" font-size="24" fill="#FF0000">THE HOLIC</text>
+  <text x="20" y="45" font-family="Arial" font-size="12" fill="#FF0000">BOARD GAME CAFE</text>
+</svg> 

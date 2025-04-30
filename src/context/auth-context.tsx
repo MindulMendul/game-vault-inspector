@@ -1,7 +1,8 @@
-
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { BranchManager } from "../types/database.types";
+import { loginBranchManager } from "../services/supabase.service";
 
 // This is a placeholder for the Supabase client, which we'll setup later
 // when the user connects their Supabase project
@@ -11,74 +12,66 @@ interface User {
 }
 
 interface AuthContextType {
-  user: User | null;
+  user: BranchManager | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<BranchManager | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     // Check if user is already logged in from localStorage
-    const storedUser = localStorage.getItem('boardgame-admin');
-    
+    const storedUser = localStorage.getItem("boardgame-admin");
+
     if (storedUser) {
       try {
         setUser(JSON.parse(storedUser));
       } catch (e) {
-        localStorage.removeItem('boardgame-admin');
+        localStorage.removeItem("boardgame-admin");
       }
     }
-    
+
     setLoading(false);
   }, []);
 
-  // Placeholder for Supabase login
-  const login = async (email: string, password: string): Promise<void> => {
+  const login = async (username: string, password: string): Promise<void> => {
     try {
-      // This is a placeholder for the Supabase auth
-      // Will be replaced when user connects to Supabase
-      if (email === 'admin@example.com' && password === 'password') {
-        const mockUser = { id: '1', email: email };
-        setUser(mockUser);
-        localStorage.setItem('boardgame-admin', JSON.stringify(mockUser));
-        navigate('/games');
-        toast.success('Login successful!');
+      const user = await loginBranchManager(username, password);
+      if (user) {
+        setUser(user);
+        localStorage.setItem("boardgame-admin", JSON.stringify(user));
+        navigate("/admin/dashboard");
+        toast.success("로그인 성공!");
       } else {
-        throw new Error('Invalid email or password');
+        throw new Error("잘못된 사용자 이름 또는 비밀번호입니다");
       }
     } catch (error) {
-      toast.error('Login failed. Please check your credentials.');
-      console.error('Login error:', error);
+      toast.error("로그인 실패. 인증 정보를 확인해주세요.");
+      console.error("Login error:", error);
       throw error;
     }
   };
 
   const logout = async (): Promise<void> => {
-    // Placeholder for Supabase logout
-    localStorage.removeItem('boardgame-admin');
+    localStorage.removeItem("boardgame-admin");
     setUser(null);
-    navigate('/login');
-    toast.success('Logged out successfully');
+    navigate("/admin/login");
+    toast.success("로그아웃되었습니다");
   };
 
-  return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ user, loading, login, logout }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
