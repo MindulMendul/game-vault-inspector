@@ -39,15 +39,15 @@ const GameList: React.FC = () => {
     <>
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Board Game Collection</h1>
-          <p className="text-muted-foreground">Manage and inspect your board games</p>
+          <h1 className="text-2xl font-bold">보드 게임 컬렉션</h1>
+          <p className="text-muted-foreground">보드 게임을 관리하고 검사하세요</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
           <div className="relative w-full sm:w-64">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="text"
-              placeholder="Search games..."
+              placeholder="게임 검색..."
               className="pl-8"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -55,7 +55,7 @@ const GameList: React.FC = () => {
           </div>
           <Button asChild>
             <Link to="/games/new">
-              <Plus className="mr-1 h-4 w-4" /> Add Game
+              <Plus className="mr-1 h-4 w-4" /> 게임 추가
             </Link>
           </Button>
         </div>
@@ -63,7 +63,7 @@ const GameList: React.FC = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Game List</CardTitle>
+          <CardTitle>게임 목록</CardTitle>
         </CardHeader>
         <CardContent>
           {isLoading ? (
@@ -72,9 +72,9 @@ const GameList: React.FC = () => {
             </div>
           ) : filteredGames.length === 0 ? (
             <div className="text-center py-10">
-              <p className="text-muted-foreground mb-4">No games found</p>
+              <p className="text-muted-foreground mb-4">게임을 찾을 수 없습니다</p>
               <Button asChild variant="outline">
-                <Link to="/games/new">Add your first game</Link>
+                <Link to="/games/new">첫 번째 게임 추가하기</Link>
               </Button>
             </div>
           ) : (
@@ -82,12 +82,12 @@ const GameList: React.FC = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[200px]">Game Name</TableHead>
-                    <TableHead className="hidden md:table-cell">Last Inspected</TableHead>
-                    <TableHead className="hidden md:table-cell">Rulebook</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Missing Parts</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead className="w-[200px]">게임 이름</TableHead>
+                    <TableHead className="hidden md:table-cell">마지막 검사</TableHead>
+                    <TableHead className="hidden md:table-cell">규칙서</TableHead>
+                    <TableHead>상태</TableHead>
+                    <TableHead>누락 부품</TableHead>
+                    <TableHead className="text-right">액션</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -100,11 +100,11 @@ const GameList: React.FC = () => {
                       <TableCell className="hidden md:table-cell">
                         {game.has_manual ? (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            Yes
+                            있음
                           </span>
                         ) : (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                            No
+                            없음
                           </span>
                         )}
                       </TableCell>
@@ -114,11 +114,11 @@ const GameList: React.FC = () => {
                       <TableCell>
                         {game.missing_components ? (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
-                            Yes
+                            있음
                           </span>
                         ) : (
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            None
+                            없음
                           </span>
                         )}
                       </TableCell>
@@ -129,7 +129,7 @@ const GameList: React.FC = () => {
                           asChild
                         >
                           <Link to={`/games/${game.id}`}>
-                            View Details
+                            상세 보기
                           </Link>
                         </Button>
                       </TableCell>

@@ -18,8 +18,8 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 const formSchema = z.object({
-  email: z.string().email({ message: 'Please enter a valid email address' }),
-  password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
+  email: z.string().email({ message: '유효한 이메일 주소를 입력해주세요' }),
+  password: z.string().min(6, { message: '비밀번호는 최소 6자 이상이어야 합니다' }),
 });
 
 const LoginForm: React.FC = () => {
@@ -48,9 +48,9 @@ const LoginForm: React.FC = () => {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl">Login</CardTitle>
+        <CardTitle className="text-2xl">로그인</CardTitle>
         <CardDescription>
-          Enter your credentials to access the board game inventory
+          보드 게임 재고 관리 시스템에 접속하기 위해 로그인하세요
         </CardDescription>
       </CardHeader>
       <Form {...form}>
@@ -61,7 +61,7 @@ const LoginForm: React.FC = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>이메일</FormLabel>
                   <FormControl>
                     <Input 
                       type="email" 
@@ -78,7 +78,7 @@ const LoginForm: React.FC = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>비밀번호</FormLabel>
                   <FormControl>
                     <Input 
                       type="password" 
@@ -100,10 +100,10 @@ const LoginForm: React.FC = () => {
               {isLoading ? (
                 <>
                   <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-b-transparent"></span>
-                  Logging in...
+                  로그인 중...
                 </>
               ) : (
-                'Login'
+                '로그인'
               )}
             </Button>
           </CardFooter>
@@ -111,12 +111,12 @@ const LoginForm: React.FC = () => {
       </Form>
       <CardFooter className="flex-col space-y-2 border-t pt-4">
         <div className="text-sm text-muted-foreground">
-          <strong>Demo Credentials:</strong><br/>
-          Email: admin@example.com<br/>
-          Password: password
+          <strong>데모 계정 정보:</strong><br/>
+          이메일: admin@example.com<br/>
+          비밀번호: password
         </div>
         <div className="text-xs text-muted-foreground">
-          Note: This is a placeholder until Supabase auth integration
+          참고: Supabase 인증 통합 전까지의 임시 로그인 방식입니다
         </div>
       </CardFooter>
     </Card>

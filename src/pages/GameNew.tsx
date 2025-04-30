@@ -16,11 +16,11 @@ const GameNew: React.FC = () => {
     setIsSaving(true);
     try {
       const newGame = await createGame(formData);
-      toast.success('Game added successfully');
+      toast.success('게임이 성공적으로 추가되었습니다');
       navigate(`/games/${newGame.id}`);
     } catch (error) {
       console.error('Failed to add game:', error);
-      toast.error('Failed to add game');
+      toast.error('게임 추가에 실패했습니다');
     } finally {
       setIsSaving(false);
     }
@@ -35,10 +35,10 @@ const GameNew: React.FC = () => {
           className="w-fit flex gap-2 items-center"
         >
           <Link to="/games">
-            <ArrowLeft className="h-4 w-4" /> Back to Games
+            <ArrowLeft className="h-4 w-4" /> 게임 목록으로 돌아가기
           </Link>
         </Button>
-        <h1 className="text-2xl font-bold order-first sm:order-last">Add New Game</h1>
+        <h1 className="text-2xl font-bold order-first sm:order-last">새 게임 추가</h1>
       </div>
       
       <GameForm

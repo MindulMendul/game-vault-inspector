@@ -50,41 +50,41 @@ const Dashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground">Overview of your board game inventory</p>
+        <h1 className="text-2xl font-bold">대시보드</h1>
+        <p className="text-muted-foreground">보드 게임 재고 현황 요약</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <div className="text-sm font-medium">Total Games</div>
+            <div className="text-sm font-medium">전체 게임</div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalGames}</div>
             <p className="text-xs text-muted-foreground">
-              Games in your collection
+              컬렉션에 있는 게임
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <div className="text-sm font-medium">Needs Attention</div>
+            <div className="text-sm font-medium">주의 필요</div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{gamesNeedingAttention.length}</div>
             <p className="text-xs text-muted-foreground">
-              Games requiring attention
+              주의가 필요한 게임
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <div className="text-sm font-medium">Needs Reorder</div>
+            <div className="text-sm font-medium">재주문 필요</div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.needsReorder}</div>
             <p className="text-xs text-muted-foreground">
-              Games needing component reorder
+              구성품 재주문이 필요한 게임
             </p>
           </CardContent>
         </Card>
@@ -92,16 +92,16 @@ const Dashboard: React.FC = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Games Needing Attention</CardTitle>
+          <CardTitle>주의가 필요한 게임</CardTitle>
           <CardDescription>
-            These games have issues that need to be addressed
+            해결이 필요한 문제가 있는 게임 목록입니다
           </CardDescription>
         </CardHeader>
         <CardContent>
           {gamesNeedingAttention.length === 0 ? (
             <div className="text-center py-10">
               <p className="text-muted-foreground">
-                No games currently need attention
+                현재 주의가 필요한 게임이 없습니다
               </p>
             </div>
           ) : (
@@ -109,11 +109,11 @@ const Dashboard: React.FC = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Game Name</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Issue</TableHead>
-                    <TableHead className="hidden md:table-cell">Last Inspected</TableHead>
-                    <TableHead className="text-right">Action</TableHead>
+                    <TableHead>게임 이름</TableHead>
+                    <TableHead>상태</TableHead>
+                    <TableHead>문제</TableHead>
+                    <TableHead className="hidden md:table-cell">마지막 검사</TableHead>
+                    <TableHead className="text-right">액션</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -124,9 +124,9 @@ const Dashboard: React.FC = () => {
                         <StatusBadge status={game.component_status} />
                       </TableCell>
                       <TableCell>
-                        {game.needs_reorder && "Needs reorder"}
+                        {game.needs_reorder && "재주문 필요"}
                         {game.needs_reorder && game.missing_components && " | "}
-                        {game.missing_components && "Missing components"}
+                        {game.missing_components && "누락 구성품"}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
                         {format(new Date(game.inspected_at), 'PPP')}
@@ -136,7 +136,7 @@ const Dashboard: React.FC = () => {
                           to={`/games/${game.id}`}
                           className="text-primary hover:underline"
                         >
-                          View Details
+                          상세 보기
                         </Link>
                       </TableCell>
                     </TableRow>

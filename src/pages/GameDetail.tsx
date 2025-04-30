@@ -25,14 +25,14 @@ const GameDetail: React.FC = () => {
       try {
         const data = await getGameById(id);
         if (!data) {
-          toast.error('Game not found');
+          toast.error('게임을 찾을 수 없습니다');
           navigate('/games');
           return;
         }
         setGame(data);
       } catch (error) {
         console.error('Failed to fetch game:', error);
-        toast.error('Failed to load game details');
+        toast.error('게임 정보를 불러오지 못했습니다');
       } finally {
         setIsLoading(false);
       }
@@ -49,11 +49,11 @@ const GameDetail: React.FC = () => {
       const updatedGame = await updateGame(id, formData);
       if (updatedGame) {
         setGame(updatedGame);
-        toast.success('Game updated successfully');
+        toast.success('게임이 성공적으로 업데이트되었습니다');
       }
     } catch (error) {
       console.error('Failed to update game:', error);
-      toast.error('Failed to update game');
+      toast.error('게임 업데이트에 실패했습니다');
     } finally {
       setIsSaving(false);
     }
@@ -76,7 +76,7 @@ const GameDetail: React.FC = () => {
           className="w-fit flex gap-2 items-center"
         >
           <Link to="/games">
-            <ArrowLeft className="h-4 w-4" /> Back to Games
+            <ArrowLeft className="h-4 w-4" /> 게임 목록으로 돌아가기
           </Link>
         </Button>
         <h1 className="text-2xl font-bold order-first sm:order-last">{game?.name}</h1>

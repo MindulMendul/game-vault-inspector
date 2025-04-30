@@ -14,7 +14,7 @@ const Navigation: React.FC = () => {
     <nav className="flex flex-col h-full border-r bg-sidebar p-4 w-64">
       <div className="space-y-1">
         <div className="pb-4 mb-4 border-b">
-          <h2 className="text-lg font-semibold">Board Game Inventory</h2>
+          <h2 className="text-lg font-semibold">보드 게임 재고 관리</h2>
           <p className="text-sm text-muted-foreground">{user?.email}</p>
         </div>
 
@@ -27,7 +27,7 @@ const Navigation: React.FC = () => {
           }
         >
           <LayoutDashboard size={18} />
-          <span>Dashboard</span>
+          <span>대시보드</span>
         </NavLink>
 
         <NavLink 
@@ -39,7 +39,7 @@ const Navigation: React.FC = () => {
           }
         >
           <List size={18} />
-          <span>Games</span>
+          <span>게임 목록</span>
         </NavLink>
       </div>
 
@@ -50,7 +50,7 @@ const Navigation: React.FC = () => {
           onClick={() => logout()}
         >
           <LogOut size={18} />
-          <span>Log out</span>
+          <span>로그아웃</span>
         </Button>
       </div>
     </nav>

@@ -19,13 +19,13 @@ const NotFound = () => {
     <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4">
       <div className="text-center space-y-4 max-w-md">
         <h1 className="text-6xl font-bold text-primary">404</h1>
-        <p className="text-xl text-muted-foreground mb-6">Page not found</p>
+        <p className="text-xl text-muted-foreground mb-6">페이지를 찾을 수 없습니다</p>
         <p className="text-muted-foreground mb-6">
-          The page you're looking for doesn't exist or has been moved.
+          찾으시는 페이지가 존재하지 않거나 이동되었습니다.
         </p>
         <Button asChild>
           <Link to={user ? "/dashboard" : "/login"}>
-            {user ? "Back to Dashboard" : "Back to Login"}
+            {user ? "대시보드로 돌아가기" : "로그인으로 돌아가기"}
           </Link>
         </Button>
       </div>

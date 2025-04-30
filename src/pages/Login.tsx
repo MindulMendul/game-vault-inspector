@@ -19,8 +19,8 @@ const Login: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold">Board Game Inventory</h1>
-          <p className="text-gray-600 mt-2">Sign in to manage your collection</p>
+          <h1 className="text-3xl font-bold">보드 게임 재고 관리</h1>
+          <p className="text-gray-600 mt-2">로그인하여 보드 게임 컬렉션을 관리하세요</p>
         </div>
         <LoginForm />
       </div>

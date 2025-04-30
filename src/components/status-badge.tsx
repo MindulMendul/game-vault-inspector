@@ -25,13 +25,13 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, className }) => {
   const getStatusText = () => {
     switch (status) {
       case '상':
-        return 'Good';
+        return '우수';
       case '중':
-        return 'Fair';
+        return '양호';
       case '하':
-        return 'Poor';
+        return '불량';
       default:
-        return 'Unknown';
+        return '알 수 없음';
     }
   };
 

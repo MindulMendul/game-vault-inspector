@@ -14,9 +14,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 
 const gameSchema = z.object({
-  name: z.string().min(1, 'Game name is required'),
-  inspected_at: z.string().min(1, 'Inspection date is required'),
-  inspected_by: z.string().min(1, 'Inspector name is required'),
+  name: z.string().min(1, '게임 이름은 필수 항목입니다'),
+  inspected_at: z.string().min(1, '검사 날짜는 필수 항목입니다'),
+  inspected_by: z.string().min(1, '검사자 이름은 필수 항목입니다'),
   has_manual: z.boolean(),
   component_status: z.enum(['상', '중', '하'] as const),
   needs_reorder: z.boolean(),
@@ -53,7 +53,7 @@ const GameForm: React.FC<GameFormProps> = ({
     try {
       await onSubmit(data);
     } catch (error) {
-      toast.error('Failed to save game data');
+      toast.error('게임 데이터 저장에 실패했습니다');
       console.error(error);
     }
   };
@@ -61,7 +61,7 @@ const GameForm: React.FC<GameFormProps> = ({
   return (
     <Card className="w-full max-w-2xl">
       <CardHeader>
-        <CardTitle>{game ? 'Edit Game' : 'Add New Game'}</CardTitle>
+        <CardTitle>{game ? '게임 수정' : '새 게임 추가'}</CardTitle>
       </CardHeader>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)}>
@@ -71,9 +71,9 @@ const GameForm: React.FC<GameFormProps> = ({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Game Name</FormLabel>
+                  <FormLabel>게임 이름</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter game name" {...field} />
+                    <Input placeholder="게임 이름 입력" {...field} />
                   </FormControl>
                 </FormItem>
               )}
@@ -85,7 +85,7 @@ const GameForm: React.FC<GameFormProps> = ({
                 name="inspected_at"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Inspection Date</FormLabel>
+                    <FormLabel>검사 날짜</FormLabel>
                     <FormControl>
                       <Input type="date" {...field} />
                     </FormControl>
@@ -98,9 +98,9 @@ const GameForm: React.FC<GameFormProps> = ({
                 name="inspected_by"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Inspected By</FormLabel>
+                    <FormLabel>검사자</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter inspector's name" {...field} />
+                      <Input placeholder="검사자 이름 입력" {...field} />
                     </FormControl>
                   </FormItem>
                 )}
@@ -119,9 +119,9 @@ const GameForm: React.FC<GameFormProps> = ({
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
-                    <FormLabel>Has Rulebook/Manual</FormLabel>
+                    <FormLabel>규칙서/매뉴얼 보유</FormLabel>
                     <FormDescription>
-                      Check if the game includes its original rulebook
+                      게임에 원본 규칙서가 포함되어 있는 경우 체크하세요
                     </FormDescription>
                   </div>
                 </FormItem>
@@ -133,7 +133,7 @@ const GameForm: React.FC<GameFormProps> = ({
               name="component_status"
               render={({ field }) => (
                 <FormItem className="space-y-1">
-                  <FormLabel>Component Status</FormLabel>
+                  <FormLabel>구성품 상태</FormLabel>
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
@@ -145,7 +145,7 @@ const GameForm: React.FC<GameFormProps> = ({
                           <RadioGroupItem value="상" />
                         </FormControl>
                         <FormLabel className="font-normal">
-                          상 (Good) - All components in excellent condition
+                          상 (우수) - 모든 구성품이 최상의 상태
                         </FormLabel>
                       </FormItem>
                       <FormItem className="flex items-center space-x-3 space-y-0">
@@ -153,7 +153,7 @@ const GameForm: React.FC<GameFormProps> = ({
                           <RadioGroupItem value="중" />
                         </FormControl>
                         <FormLabel className="font-normal">
-                          중 (Fair) - Some wear but functionally complete
+                          중 (양호) - 약간의 마모가 있지만 기능적으로 완전함
                         </FormLabel>
                       </FormItem>
                       <FormItem className="flex items-center space-x-3 space-y-0">
@@ -161,7 +161,7 @@ const GameForm: React.FC<GameFormProps> = ({
                           <RadioGroupItem value="하" />
                         </FormControl>
                         <FormLabel className="font-normal">
-                          하 (Poor) - Significant wear or damage
+                          하 (불량) - 상당한 마모나 손상이 있음
                         </FormLabel>
                       </FormItem>
                     </RadioGroup>
@@ -182,9 +182,9 @@ const GameForm: React.FC<GameFormProps> = ({
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
-                    <FormLabel>Needs Component Reorder</FormLabel>
+                    <FormLabel>구성품 재주문 필요</FormLabel>
                     <FormDescription>
-                      Check if replacement components need to be ordered
+                      교체 구성품을 주문해야 하는 경우 체크하세요
                     </FormDescription>
                   </div>
                 </FormItem>
@@ -196,10 +196,10 @@ const GameForm: React.FC<GameFormProps> = ({
               name="missing_components"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Missing Components</FormLabel>
+                  <FormLabel>누락된 구성품</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="List any missing or damaged components"
+                      placeholder="누락되거나 손상된 구성품 목록"
                       className="resize-none"
                       {...field}
                     />
@@ -217,10 +217,10 @@ const GameForm: React.FC<GameFormProps> = ({
               {isLoading ? (
                 <>
                   <span className="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-b-transparent"></span>
-                  Saving...
+                  저장 중...
                 </>
               ) : (
-                'Save Game'
+                '게임 저장'
               )}
             </Button>
           </CardFooter>
