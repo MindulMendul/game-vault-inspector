@@ -6,8 +6,8 @@ const Index: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // 사용자가 로그인 여부와 상관없이 게임 목록으로 바로 이동
-    navigate("/games");
+    // 메인 페이지에 접속하면 매장 선택 페이지로 이동
+    navigate("/");
   }, [navigate]);
 
   return (

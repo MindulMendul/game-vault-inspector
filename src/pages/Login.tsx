@@ -11,9 +11,9 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Redirect if already logged in
+    // 이미 로그인한 경우 관리자 대시보드로 리디렉션
     if (user) {
-      navigate('/games');
+      navigate('/admin/dashboard');
     }
   }, [user, navigate]);
 
@@ -25,8 +25,8 @@ const Login: React.FC = () => {
           asChild
           className="mb-6 gap-2"
         >
-          <Link to="/games">
-            <ArrowLeft size={16} /> 게임 목록으로 돌아가기
+          <Link to="/">
+            <ArrowLeft size={16} /> 메인으로 돌아가기
           </Link>
         </Button>
         
