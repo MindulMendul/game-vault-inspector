@@ -114,6 +114,7 @@ const StoreGameList: React.FC = () => {
                     <TableHead>게임 이름</TableHead>
                     <TableHead className="hidden md:table-cell">규칙서</TableHead>
                     <TableHead>상태</TableHead>
+                    <TableHead className="hidden md:table-cell">누락 부품</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -134,6 +135,9 @@ const StoreGameList: React.FC = () => {
                       <TableCell>
                         <StatusBadge status={game.component_status} />
                       </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        {game.missing_components ? game.missing_components : "-"}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -142,12 +146,6 @@ const StoreGameList: React.FC = () => {
           )}
         </CardContent>
       </Card>
-      
-      <div className="mt-8 text-center">
-        <Button variant="outline" asChild>
-          <Link to="/admin/login">관리자 로그인</Link>
-        </Button>
-      </div>
     </div>
   );
 };

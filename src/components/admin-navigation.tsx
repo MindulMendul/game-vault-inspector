@@ -3,7 +3,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/auth-context';
-import { LayoutDashboard, List, LogOut, Store } from 'lucide-react';
+import { LayoutDashboard, List, LogOut } from 'lucide-react';
 
 const AdminNavigation: React.FC = () => {
   const { user, logout } = useAuth();
@@ -15,16 +15,6 @@ const AdminNavigation: React.FC = () => {
           <h2 className="text-lg font-semibold">보드 게임 재고 관리</h2>
           {user && <p className="text-sm text-muted-foreground">{user.email}</p>}
         </div>
-
-        <NavLink 
-          to="/"
-          className={({ isActive }) => 
-            `flex items-center gap-2 px-3 py-2 rounded-md transition-colors hover:bg-secondary`
-          }
-        >
-          <Store size={18} />
-          <span>매장 선택</span>
-        </NavLink>
 
         {user && (
           <>
