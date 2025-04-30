@@ -3,7 +3,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/auth-context';
-import { Dashboard, List, LogOut } from 'lucide-react';
+import { LayoutDashboard, List, LogOut } from 'lucide-react';
 
 const Navigation: React.FC = () => {
   const { user, logout } = useAuth();
@@ -26,7 +26,7 @@ const Navigation: React.FC = () => {
             }`
           }
         >
-          <Dashboard size={18} />
+          <LayoutDashboard size={18} />
           <span>Dashboard</span>
         </NavLink>
 
