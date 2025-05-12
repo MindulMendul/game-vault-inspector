@@ -15,13 +15,13 @@ export type BranchManager = {
 export type Game = {
   id: string;
   name: string;
-  description: string;
+  // description: string;
   photo: string | null;
-  min_players: number;
-  max_players: number;
-  play_time: number;
-  difficulty: number;
-  created_at?: string;
+  // min_players: number;
+  // max_players: number;
+  // play_time: number;
+  // difficulty: number;
+  // created_at?: string;
 };
 
 export enum GameStatus {

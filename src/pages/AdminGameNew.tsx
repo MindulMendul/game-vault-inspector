@@ -21,6 +21,7 @@ const AdminGameNew: React.FC = () => {
     game_id: "",
     game_name: "",
     game_identifier: "",
+    isNew: false,
   });
 
   useEffect(() => {
@@ -41,6 +42,9 @@ const AdminGameNew: React.FC = () => {
     .filter((game) => game.name.toLowerCase().includes(searchQuery.toLowerCase()))
     .slice(0, 5);
 
+  const isGameInDb = allGames.some((game) => game.name === searchQuery);
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user?.branch_id) {
@@ -48,32 +52,46 @@ const AdminGameNew: React.FC = () => {
       return;
     }
 
-    if (!formData.game_name) {
-      toast.error("게임을 선택해주세요");
+    if (!formData.game_name || formData.game_name.trim() === "") {
+      toast.error("게임 이름을 입력해주세요");
       return;
     }
 
     setIsSaving(true);
     try {
-      // 게임 이름으로 게임 ID 찾기
-      const games = await getGames();
-      console.log("Available games:", games);
-
-      const selectedGame = games.find((game) => game.name === formData.game_name);
-      console.log("Selected game:", selectedGame);
-
-      if (!selectedGame) {
-        toast.error(`'${formData.game_name}' 게임을 찾을 수 없습니다`);
+      let gameToUse;
+      if (formData.isNew) {
+        // 무조건 새로 추가
+        const newGame = await createGame({
+          name: formData.game_name.trim(),
+          photo: null,
+        });
+        gameToUse = newGame;
+        toast.success(`'${formData.game_name.trim()}' 게임이 DB에 새로 추가되었습니다.`);
+      } else {
+        // 기존 DB에서 찾기, 없으면 새로 추가
+        const existingGame = allGames.find(
+          (game) => game.name === formData.game_name.trim()
+        );
+        if (existingGame) {
+          gameToUse = existingGame;
+        } else {
+          const newGame = await createGame({
+            name: formData.game_name.trim(),
+            photo: null,
+          });
+          gameToUse = newGame;
+          toast.success(`'${formData.game_name.trim()}' 게임이 DB에 새로 추가되었습니다.`);
+        }
+      }
+      // 타입가드: id가 있는 경우에만 addGameToBranch 호출
+      if ('id' in gameToUse && gameToUse.id) {
+        await addGameToBranch(user.branch_id, gameToUse.id, formData.game_identifier);
+      } else {
+        toast.error("게임 추가에 실패했습니다 (id 없음)");
+        setIsSaving(false);
         return;
       }
-
-      console.log("Attempting to add game with:", {
-        branchId: user.branch_id,
-        gameId: selectedGame.id,
-        gameIdentifier: formData.game_identifier || null,
-      });
-
-      await addGameToBranch(user.branch_id, selectedGame.id, formData.game_identifier);
       toast.success("게임이 성공적으로 추가되었습니다");
       navigate("/admin/games");
     } catch (error) {
@@ -88,14 +106,27 @@ const AdminGameNew: React.FC = () => {
     }
   };
 
-  const handleGameSelect = (game: Game) => {
-    setFormData({
-      game_id: game.id,
-      game_name: game.name,
-      game_identifier: "",
-    });
-    setSearchQuery(game.name);
-    setShowDropdown(false);
+  // game: Game | { name: string, isNew: true }
+  const handleGameSelect = (game: Game | { name: string; isNew: true }) => {
+    if ('isNew' in game && game.isNew) {
+      setFormData({
+        game_id: '',
+        game_name: game.name,
+        game_identifier: '',
+        isNew: true,
+      });
+      setSearchQuery(game.name);
+      setShowDropdown(false);
+    } else {
+      setFormData({
+        game_id: game.id,
+        game_name: game.name,
+        game_identifier: '',
+        isNew: false,
+      });
+      setSearchQuery(game.name);
+      setShowDropdown(false);
+    }
   };
 
   return (
@@ -124,14 +155,19 @@ const AdminGameNew: React.FC = () => {
                   value={searchQuery}
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
+                    setFormData((prev) => ({ ...prev, game_name: e.target.value }));
                     setShowDropdown(true);
                   }}
                   onFocus={() => setShowDropdown(true)}
+                  onBlur={() => setShowDropdown(false)}
                   placeholder="게임 이름을 입력하세요"
                   required
                 />
-                {showDropdown && filteredGames.length > 0 && (
-                  <div className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-y-auto">
+                {showDropdown && (
+                  <div
+                    className="absolute z-10 w-full mt-1 bg-white border rounded-md shadow-lg max-h-60 overflow-y-auto"
+                    onMouseDown={(e) => e.preventDefault()}
+                  >
                     {filteredGames.map((game) => (
                       <div
                         key={game.id}
@@ -141,6 +177,16 @@ const AdminGameNew: React.FC = () => {
                         {game.name}
                       </div>
                     ))}
+                    {/* DB에 없는 경우 새 게임 추가 옵션 */}
+                    {searchQuery && !isGameInDb && (
+                      <div
+                        key={"new-game-option"}
+                        className="px-4 py-2 hover:bg-blue-100 cursor-pointer text-blue-600"
+                        onClick={() => handleGameSelect({ name: searchQuery, isNew: true })}
+                      >
+                        {`새 게임 추가 (${searchQuery})`}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
