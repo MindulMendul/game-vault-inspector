@@ -7,13 +7,18 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { getBranchGames } from "@/services/supabase.service";
 import { BranchGameList, GameStatus } from "@/types/database.types";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
+
+type SortField = 'name' | 'status' | 'lastCheckDate' | null;
+type SortDirection = 'asc' | 'desc' | null;
 
 const AdminGameList: React.FC = () => {
   const [games, setGames] = useState<BranchGameList[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [sortField, setSortField] = useState<SortField>(null);
+  const [sortDirection, setSortDirection] = useState<SortDirection>(null);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -33,7 +38,49 @@ const AdminGameList: React.FC = () => {
     fetchGames();
   }, [user]);
 
-  const filteredGames = games.filter((game) => game.game?.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      if (sortDirection === 'asc') {
+        setSortDirection('desc');
+      } else if (sortDirection === 'desc') {
+        setSortField(null);
+        setSortDirection(null);
+      } else {
+        setSortDirection('asc');
+      }
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const getSortedGames = () => {
+    const filteredGames = games.filter((game) => 
+      game.game?.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    if (!sortField || !sortDirection) {
+      return filteredGames;
+    }
+
+    return [...filteredGames].sort((a, b) => {
+      let comparison = 0;
+
+      switch (sortField) {
+        case 'name':
+          comparison = (a.game?.name || '').localeCompare(b.game?.name || '');
+          break;
+        case 'status':
+          comparison = a.status.localeCompare(b.status);
+          break;
+        case 'lastCheckDate':
+          comparison = new Date(a.last_check_date).getTime() - new Date(b.last_check_date).getTime();
+          break;
+      }
+
+      return sortDirection === 'asc' ? comparison : -comparison;
+    });
+  };
 
   const getStatusColor = (status: GameStatus) => {
     switch (status) {
@@ -48,15 +95,34 @@ const AdminGameList: React.FC = () => {
     }
   };
 
+  const getSortIcon = (field: SortField) => {
+    if (sortField !== field) return <ArrowUpDown className="h-4 w-4" />;
+    if (sortDirection === 'asc') return <ArrowUp className="h-4 w-4" />;
+    return <ArrowDown className="h-4 w-4" />;
+  };
+
+  const getSortStatusText = () => {
+    if (!sortField || !sortDirection) return null;
+
+    const fieldNames = {
+      name: '게임 이름',
+      status: '상태',
+      lastCheckDate: '최근 점검일'
+    };
+
+    const directionText = sortDirection === 'asc' ? '오름차순' : '내림차순';
+    return `정렬 기준: ${fieldNames[sortField]} (${directionText})`;
+  };
+
   return (
-    <>
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+    <div className="p-4 space-y-6 max-w-full">
+      <div className="flex flex-col gap-4">
         <div>
-          <h1 className="text-2xl font-bold">보드 게임 관리</h1>
-          <p className="text-muted-foreground">지점의 모든 보드 게임 목록을 확인하세요</p>
+          <h1 className="text-xl sm:text-2xl font-bold">보드 게임 관리</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">지점의 모든 보드 게임 목록을 확인하세요</p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-          <div className="relative w-full sm:w-64">
+        <div className="flex flex-col gap-2">
+          <div className="relative w-full">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="text"
@@ -66,7 +132,7 @@ const AdminGameList: React.FC = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <Button asChild>
+          <Button asChild className="w-full sm:w-auto">
             <Link to="/admin/games/new">
               <Plus className="mr-1 h-4 w-4" /> 게임 추가
             </Link>
@@ -75,15 +141,20 @@ const AdminGameList: React.FC = () => {
       </div>
 
       <Card>
-        <CardHeader>
-          <CardTitle>게임 목록</CardTitle>
+        <CardHeader className="p-4 sm:p-6">
+          <div className="flex flex-col gap-2">
+            <CardTitle className="text-lg sm:text-xl">게임 목록</CardTitle>
+            {getSortStatusText() && (
+              <p className="text-xs sm:text-sm text-muted-foreground">{getSortStatusText()}</p>
+            )}
+          </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0 sm:p-6">
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
               <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
             </div>
-          ) : filteredGames.length === 0 ? (
+          ) : getSortedGames().length === 0 ? (
             <div className="text-center py-10">
               <p className="text-muted-foreground mb-4">게임을 찾을 수 없습니다</p>
               <Button asChild variant="outline">
@@ -91,61 +162,86 @@ const AdminGameList: React.FC = () => {
               </Button>
             </div>
           ) : (
-            <div className="rounded-md border">
+            <div className="rounded-md border overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-[200px]">게임 이름</TableHead>
-                    <TableHead>구분자</TableHead>
-                    <TableHead className="hidden md:table-cell">최근 점검일</TableHead>
-                    <TableHead className="hidden md:table-cell">관리자</TableHead>
-                    <TableHead>상태</TableHead>
-                    <TableHead>룰북</TableHead>
-                    <TableHead>재주문 필요</TableHead>
-                    <TableHead className="w-[300px]">특이사항</TableHead>
-                    <TableHead className="text-right">액션</TableHead>
+                    <TableHead className="w-[120px] sm:w-[200px]">
+                      <Button
+                        variant="ghost"
+                        onClick={() => handleSort('name')}
+                        className="flex items-center gap-1 text-xs sm:text-sm"
+                      >
+                        게임 이름
+                        {getSortIcon('name')}
+                      </Button>
+                    </TableHead>
+                    <TableHead className="w-[80px] sm:w-auto">
+                      <span className="text-xs sm:text-sm">구분자</span>
+                    </TableHead>
+                    <TableHead className="w-[100px] sm:w-auto">
+                      <Button
+                        variant="ghost"
+                        onClick={() => handleSort('lastCheckDate')}
+                        className="flex items-center gap-1 text-xs sm:text-sm"
+                      >
+                        점검일
+                        {getSortIcon('lastCheckDate')}
+                      </Button>
+                    </TableHead>
+                    <TableHead className="w-[80px] sm:w-auto">
+                      <Button
+                        variant="ghost"
+                        onClick={() => handleSort('status')}
+                        className="flex items-center gap-1 text-xs sm:text-sm"
+                      >
+                        상태
+                        {getSortIcon('status')}
+                      </Button>
+                    </TableHead>
+                    <TableHead className="w-[80px] sm:w-auto">
+                      <span className="text-xs sm:text-sm">룰북</span>
+                    </TableHead>
+                    <TableHead className="w-[100px] sm:w-auto">
+                      <span className="text-xs sm:text-sm">재주문</span>
+                    </TableHead>
+                    <TableHead className="w-[80px] sm:w-auto text-right">
+                      <span className="text-xs sm:text-sm">액션</span>
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredGames.map((game) => (
+                  {getSortedGames().map((game) => (
                     <TableRow key={game.id}>
-                      <TableCell className="font-medium">{game.game?.name}</TableCell>
-                      <TableCell>{game.game_identifier}</TableCell>
-                      <TableCell className="hidden md:table-cell">
+                      <TableCell className="font-medium text-xs sm:text-sm">{game.game?.name}</TableCell>
+                      <TableCell className="text-xs sm:text-sm">{game.game_identifier}</TableCell>
+                      <TableCell className="text-xs sm:text-sm">
                         {new Date(game.last_check_date).toLocaleDateString()}
                       </TableCell>
-                      <TableCell className="hidden md:table-cell">{game.inspector || "-"}</TableCell>
                       <TableCell>
-                        <Badge className={getStatusColor(game.status)}>{game.status}</Badge>
+                        <Badge className={`${getStatusColor(game.status)} text-xs`}>{game.status}</Badge>
                       </TableCell>
                       <TableCell>
                         {game.rulebook_exists ? (
-                          <Badge variant="outline" className="bg-green-50">
+                          <Badge variant="outline" className="bg-green-50 text-xs">
                             보유
                           </Badge>
                         ) : (
-                          <Badge variant="outline" className="bg-red-50">
+                          <Badge variant="outline" className="bg-red-50 text-xs">
                             없음
                           </Badge>
                         )}
                       </TableCell>
                       <TableCell>
                         {game.reorder_needed && (
-                          <Badge variant="outline" className="bg-yellow-50">
-                            재주문 필요
+                          <Badge variant="outline" className="bg-yellow-50 text-xs">
+                            필요
                           </Badge>
                         )}
                       </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          {game.missing_parts && (
-                            <div className="text-sm text-orange-500">누락: {game.missing_parts}</div>
-                          )}
-                        </div>
-                      </TableCell>
                       <TableCell className="text-right">
-                        <Button variant="ghost" size="sm" asChild>
-                          <Link to={`/admin/branch-games/${game.id}`}>상세 보기</Link>
+                        <Button variant="ghost" size="sm" asChild className="h-8 px-2">
+                          <Link to={`/admin/branch-games/${game.id}`}>보기</Link>
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -156,7 +252,7 @@ const AdminGameList: React.FC = () => {
           )}
         </CardContent>
       </Card>
-    </>
+    </div>
   );
 };
 

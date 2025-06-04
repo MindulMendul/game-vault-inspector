@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAuth } from '@/context/auth-context';
 import { Link } from 'react-router-dom';
@@ -14,19 +13,21 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   const { user } = useAuth();
   
   return (
-    <div className="flex h-screen">
+    <div className="flex min-h-screen">
       <AdminNavigation />
-      <main className="flex-1 overflow-auto p-6">
-        {!user && (
-          <div className="flex justify-end mb-4">
-            <Button asChild variant="outline" className="gap-2">
-              <Link to="/admin/login">
-                <LogIn size={16} /> 관리자 로그인
-              </Link>
-            </Button>
-          </div>
-        )}
-        {children}
+      <main className="flex-1 overflow-auto">
+        <div className="p-4 md:p-6">
+          {!user && (
+            <div className="flex justify-end mb-4">
+              <Button asChild variant="outline" className="gap-2">
+                <Link to="/admin/login">
+                  <LogIn size={16} /> 관리자 로그인
+                </Link>
+              </Button>
+            </div>
+          )}
+          {children}
+        </div>
       </main>
     </div>
   );
